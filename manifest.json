@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "BookMyShow Ticket Notifier",
+  "version": "1.0",
+  "description": "Get notified when movie tickets become available on BookMyShow",
+  "permissions": [
+    "notifications",
+    "alarms",
+    "storage",
+    "tts"
+  ],
+  "host_permissions": [
+    "https://in.bookmyshow.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  }
+}

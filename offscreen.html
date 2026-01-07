@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BookMyShow Notifier - Audio</title>
+</head>
+<body>
+  <script>
+    console.log('Offscreen document loaded');
+
+    // Listen for messages from background script
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+      console.log('Offscreen received message:', message);
+
+      if (message.action === 'playSound') {
+        try {
+          playAlertSound();
+          console.log('Sound played successfully');
+          sendResponse({ success: true });
+        } catch (error) {
+          console.error('Error playing sound:', error);
+          sendResponse({ success: false, error: error.message });
+        }
+        return true; // Keep channel open for async response
+      }
+    });
+
+    function playAlertSound() {
+      // Create AudioContext
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+      console.log('AudioContext created, playing beeps...');
+
+      // Play a series of beeps (notification sound)
+      playBeep(audioContext, 800, 0, 0.15);      // First beep
+      playBeep(audioContext, 1000, 0.2, 0.15);   // Second beep
+      playBeep(audioContext, 800, 0.4, 0.25);    // Third beep (longer)
+    }
+
+    function playBeep(audioContext, frequency, startTime, duration) {
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.frequency.value = frequency;
+      oscillator.type = 'sine';
+
+      // Envelope for smooth sound
+      const now = audioContext.currentTime + startTime;
+      gainNode.gain.setValueAtTime(0, now);
+      gainNode.gain.linearRampToValueAtTime(0.3, now + 0.01);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, now + duration);
+
+      oscillator.start(now);
+      oscillator.stop(now + duration);
+    }
+  </script>
+</body>
+</html><!DOCTYPE html>
+<html>
+<head>
+  <title>BookMyShow Notifier - Audio</title>
+</head>
+<body>
+  <script>
+    // Listen for messages from background script
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+      if (message.action === 'playSound') {
+        playAlertSound();
+      }
+    });
+
+    function playAlertSound() {
+      // Create AudioContext
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+      // Play a series of beeps (notification sound)
+      playBeep(audioContext, 800, 0, 0.15);      // First beep
+      playBeep(audioContext, 1000, 0.2, 0.15);   // Second beep
+      playBeep(audioContext, 800, 0.4, 0.25);    // Third beep (longer)
+
+      console.log('Alert sound played');
+    }
+
+    function playBeep(audioContext, frequency, startTime, duration) {
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.frequency.value = frequency;
+      oscillator.type = 'sine';
+
+      // Envelope for smooth sound
+      const now = audioContext.currentTime + startTime;
+      gainNode.gain.setValueAtTime(0, now);
+      gainNode.gain.linearRampToValueAtTime(0.3, now + 0.01);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, now + duration);
+
+      oscillator.start(now);
+      oscillator.stop(now + duration);
+    }
+  </script>
+</body>
+</html>
